@@ -17,22 +17,22 @@ Before you start, ensure you have the following installed:
 ## Project Setup
 
 1. **Clone the Repository**
-'''
+```
 git clone https://your-repository-url-here.git
 cd vue-cognito-app
-'''
+```
 
 2. **Install Dependencies**
-'''
+```
 npm install
-'''
+```
 
 3. **Configure AWS Cognito**
 - Create a file named .env.local in the root directory for local development as shown below:
-'''
+```
 VUE_APP_COGNITO_USER_POOL_ID=your_user_pool_id_here
 VUE_APP_COGNITO_CLIENT_ID=your_client_id_here
-'''
+```
 - Replace your_user_pool_id_here and your_client_id_here with your actual AWS Cognito User Pool ID and Client ID as Vue.js automatically loads all variables that start with VUE_APP_ into your application's process.env.
 - For production, you can set up similar variables in your production environment's configuration, often through settings provided by your hosting service or CI/CD pipeline.
 
@@ -46,21 +46,21 @@ VUE_APP_COGNITO_CLIENT_ID=your_client_id_here
 ## Building and Running with Docker
 
 1. **Build the Docker Image**
-'''
+```
 docker build -t vue-cognito-app .
-'''
+```
 
 2. **Run the Docker Container**
-docker run -it -p 8080:'YOUR_DOCKER_PORT_NUMBER' vue-cognito-app
+docker run -it -p 8080:`YOUR_DOCKER_PORT_NUMBER` vue-cognito-app
 - Now, your application is running inside a Docker container. Access it via http://localhost:8080 in any web browser.
 
 ## Additional Information
 
 - **Testing**: Run `npm run test` to execute the unit tests via [Jest](https://jestjs.io/).
 - **Building for Production**: To build the app for production, run:
-'''
+```
 npm run build
-'''
+```
 - This builds the app for production to the `dist/` folder. It correctly bundles Vue in production mode and optimizes the build for the best performance.
 
 ## Contributing
