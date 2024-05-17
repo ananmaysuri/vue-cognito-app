@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Dashboard</h1>
-    <p>Welcome to your Dashboard, {{ username }}!!!</p>
+    <p>Welcome to your Dashboard, {{ username }}!</p>
   </div>
 </template>
 
@@ -9,13 +9,18 @@
 import { ref, onMounted } from 'vue';
 
 export default {
+  name: 'UserDashboard',
   setup() {
     const username = ref('Guest');
 
-    onMounted(() => {
-      const storedUsername = sessionStorage.getItem('username');
-      if (storedUsername) {
-        username.value = storedUsername;
+    onMounted(async () => {
+      try {
+        const storedUsername = sessionStorage.getItem('username');
+        if (storedUsername) {
+            username.value = storedUsername;
+        }
+      } catch (error) {
+        console.error('Failed to fetch user', error);
       }
     });
 

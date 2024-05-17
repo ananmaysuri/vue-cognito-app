@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 const routes = [
   {
@@ -8,7 +9,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../components/UserLogin.vue') 
+    component: () => import('../components/UserLogin.vue')
   },
   {
     path: '/register',
@@ -18,8 +19,8 @@ const routes = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: () => import('../components/UserDashboard.vue'),
-    meta: { requiresAuth: true }
+    component: () => import('../components/UserDashboard.vue')
+    // meta: { requiresAuth: true }
   },
   {
     path: '/confirm',
@@ -33,14 +34,22 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const isAuthenticated = sessionStorage.getItem('isLoggedIn');
 
-  if (requiresAuth && !isAuthenticated) {
+  if (requiresAuth) {
+    try {
+      const session = await fetchAuthSession();
+      if (session.isValid()) {
+        next();
+      } else {
+        throw new Error('Session is not valid');
+      }
+    } catch {
       next({ name: 'Login' });
+    }
   } else {
-      next();
+    next();
   }
 });
 

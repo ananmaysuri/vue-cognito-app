@@ -12,7 +12,7 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { CognitoUserPool, AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js';
+import { signIn, signOut } from 'aws-amplify/auth';
 
 export default {
   name: 'UserLogin',
@@ -21,33 +21,22 @@ export default {
     const password = ref('');
     const router = useRouter();
 
-    const userPool = new CognitoUserPool({
-      UserPoolId: process.env.VUE_APP_COGNITO_USER_POOL_ID,
-      ClientId: process.env.VUE_APP_COGNITO_CLIENT_ID
-    });
+    async function login() {
+      try {
+        await signOut();
+      } catch (error) {
+        // No existing session, continue to sign in
+        // Debug here to check if signed in already
+      }
 
-    function login() {
-      const userData = {
-        Username: email.value,
-        Pool: userPool
-      };
-      const authenticationDetails = new AuthenticationDetails({
-        Username: email.value,
-        Password: password.value
-      });
-      const cognitoUser = new CognitoUser(userData);
-
-      cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: function (result) {
-          alert('Login successful. Access token: ' + result.getAccessToken().getJwtToken());
-          sessionStorage.setItem('isLoggedIn', 'true');
-          sessionStorage.setItem('username', userData.Username);
-          router.push('/dashboard');
-        },
-        onFailure: function(err) {
-          alert(err.message || JSON.stringify(err));
-        },
-      });
+      try {
+        await signIn({ username: email.value, password: password.value });
+        sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('username', email.value);
+        router.push('/dashboard');
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
     return { email, password, login };

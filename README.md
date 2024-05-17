@@ -22,21 +22,34 @@ git clone https://your-repository-url-here.git
 cd vue-cognito-app
 ```
 
-2. **Install Dependencies**
+2. **Install Dependencies and Configure AWS Cognito**
+### Set Up Amplify CLI
+- Install Amplify CLI:
 ```
-npm install
+npm install -g @aws-amplify/cli
+```
+- Configure Amplify CLI:
+```
+amplify configure
+```
+- Initialize Amplify in Your Project:
+```
+amplify init
+```
+- Add Authentication:
+```
+amplify add auth
+```
+- Deploy the Backend:
+```
+amplify push
+```
+- Install Amplify Libraries
+```
+npm install aws-amplify @aws-amplify/ui-vue
 ```
 
-3. **Configure AWS Cognito**
-- Create a file named .env.local in the root directory for local development as shown below:
-```
-VUE_APP_COGNITO_USER_POOL_ID=your_user_pool_id_here
-VUE_APP_COGNITO_CLIENT_ID=your_client_id_here
-```
-- Replace your_user_pool_id_here and your_client_id_here with your actual AWS Cognito User Pool ID and Client ID as Vue.js automatically loads all variables that start with VUE_APP_ into your application's process.env.
-- For production, you can set up similar variables in your production environment's configuration, often through settings provided by your hosting service or CI/CD pipeline.
-
-4. **Local Development**
+3. **Local Development**
 - To run the application locally:
   ```
   npm run serve

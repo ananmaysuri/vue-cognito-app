@@ -12,7 +12,7 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { CognitoUserPool, CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import { signUp } from 'aws-amplify/auth';
 
 export default {
   name: 'UserRegister',
@@ -20,25 +20,21 @@ export default {
     const email = ref('');
     const password = ref('');
     const router = useRouter();
-    const userPool = new CognitoUserPool({
-      UserPoolId: process.env.VUE_APP_COGNITO_USER_POOL_ID,
-      ClientId: process.env.VUE_APP_COGNITO_CLIENT_ID
-    });
 
-    function register() {
-      const attributeList = [
-        new CognitoUserAttribute({ Name: 'email', Value: email.value })
-      ];
-
-      userPool.signUp(email.value, password.value, attributeList, null, (err, result) => {
-        if (err) {
-          alert(err.message || JSON.stringify(err));
-          return;
-        }
+    async function register() {
+      try {
+        await signUp({
+          username: email.value,
+          password: password.value,
+          attributes: {
+            email: email.value,
+          }
+        });
         alert('Registration successful, please check your email for verification link.');
-        console.log('Registration details:', result);
         router.push('/confirm');
-      });
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
     return { email, password, register };
