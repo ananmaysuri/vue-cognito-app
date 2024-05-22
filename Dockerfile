@@ -1,5 +1,5 @@
 # Base image
-FROM node:lts-alpine
+FROM --platform=linux/amd64 node:lts-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -15,9 +15,11 @@ COPY . .
 # Build the app
 RUN npm run build
 
-# Serve the app using serve package
-RUN npm install -g serve
-CMD ["serve", "-s", "dist"]
+# Install a HTTP server to serve static files
+RUN npm install -g http-server
 
 # Expose the port
 EXPOSE 5000
+
+# Use the http-server to serve the static files from the dist directory
+CMD ["http-server", "dist", "-p", "5000"]
