@@ -12,7 +12,7 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { signIn, signOut } from 'aws-amplify/auth';
+import axios from 'axios';
 
 export default {
   name: 'UserLogin',
@@ -23,23 +23,24 @@ export default {
 
     async function login() {
       try {
-        await signOut();
-      } catch (error) {
-        // No existing session, continue to sign in
-        // Debug here to check if signed in already
-      }
+        const response = await axios.post('https://o5gyzm0fw7.execute-api.us-east-2.amazonaws.com/loginLambda', {
+          email: email.value,
+          password: password.value,
+        });
 
-      try {
-        await signIn({ username: email.value, password: password.value });
-        sessionStorage.setItem('isLoggedIn', 'true');
-        sessionStorage.setItem('username', email.value);
-        router.push('/dashboard');
+        if (response.data.success) {
+          sessionStorage.setItem('isLoggedIn', 'true');
+          sessionStorage.setItem('username', email.value);
+          router.push('/dashboard');
+        } else {
+          alert('Login failed');
+        }
       } catch (error) {
         alert(error.message);
       }
     }
 
     return { email, password, login };
-  }
-}
+  },
+};
 </script>

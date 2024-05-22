@@ -12,7 +12,7 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { signUp } from 'aws-amplify/auth';
+import axios from 'axios';
 
 export default {
   name: 'UserRegister',
@@ -23,21 +23,23 @@ export default {
 
     async function register() {
       try {
-        await signUp({
-          username: email.value,
+        const response = await axios.post('https://o5gyzm0fw7.execute-api.us-east-2.amazonaws.com/registerLambda', {
+          email: email.value,
           password: password.value,
-          attributes: {
-            email: email.value,
-          }
         });
-        alert('Registration successful, please check your email for verification link.');
-        router.push('/confirm');
+
+        if (response.data.success) {
+          alert('Registration successful, please check your email for verification link.');
+          router.push('/confirm');
+        } else {
+          alert('Registration failed');
+        }
       } catch (error) {
         alert(error.message);
       }
     }
 
     return { email, password, register };
-  }
-}
+  },
+};
 </script>

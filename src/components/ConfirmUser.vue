@@ -12,7 +12,7 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { confirmSignUp } from 'aws-amplify/auth';
+import axios from 'axios';
 
 export default {
   name: 'ConfirmUser',
@@ -23,18 +23,23 @@ export default {
 
     async function confirmRegistration() {
       try {
-        await confirmSignUp({
-          username: email.value,
-          confirmationCode: code.value
+        const response = await axios.post('https://o5gyzm0fw7.execute-api.us-east-2.amazonaws.com/confirmLambda', {
+          email: email.value,
+          code: code.value,
         });
-        alert('Your account has been confirmed!');
-        router.push('/login');
+
+        if (response.data.success) {
+          alert('Your account has been confirmed!');
+          router.push('/login');
+        } else {
+          alert('Confirmation failed');
+        }
       } catch (error) {
         alert(error.message);
       }
     }
 
     return { email, code, confirmRegistration };
-  }
-}
+  },
+};
 </script>
